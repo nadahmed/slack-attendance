@@ -16,7 +16,7 @@ COPY ./requirements.txt .
 
 RUN apk update \
     && apk add --virtual build-deps gcc g++ python3-dev musl-dev \
-    && apk add --no-cache mariadb-dev \
+    && apk add --no-cache \
     freetype-dev \
     fribidi-dev \
     harfbuzz-dev \
