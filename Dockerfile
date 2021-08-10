@@ -29,8 +29,7 @@ RUN apk update \
     tk-dev \
     zlib-dev \
     && pip install --no-cache-dir -r requirements.txt \
-    && apk del build-deps \
-    && mkdir static
+    && apk del build-deps
 
 COPY . .
 
