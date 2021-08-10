@@ -1,3 +1,4 @@
+import datetime
 from django.db import models
 from django.utils import timezone
 
@@ -5,10 +6,28 @@ class Timesheet(models.Model):
     name = models.CharField(blank=False, null=False, max_length=64)
     date = models.DateField(auto_now=True)
 
+    def total_work_hour(self):
+        check_out = self.check_out.all()
+        check_in = self.check_in.all()
+        date = datetime.date(1, 1, 1)
+
+        total = datetime.timedelta(0)
+        for i in range(check_out.count()):
+            start_time = check_in[i].time
+            stop_time = check_out[i].time
+            datetime1 = datetime.datetime.combine(date, start_time)
+            datetime2 = datetime.datetime.combine(date, stop_time)
+            time_elapsed = datetime2 - datetime1
+
+            total = total + time_elapsed    
+
+        return str(total).split('.')[0]
+
+    def is_checked_out(self):
+        return self.check_in.count() == self.check_out.count()        
+
     def can_check_in(self):
-        print(self.check_in.count())
-        print(self.check_out.count())
-        return self.check_in.count() == self.check_out.count()
+        return self.is_checked_out()
     
     def can_check_out(self):
         return self.check_in.count() > self.check_out.count()

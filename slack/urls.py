@@ -17,7 +17,11 @@ from django.contrib import admin
 from django.urls import path
 from django.urls.conf import include
 
+admin.site.site_header = 'Hivecore Attendance Administration'                    # default: "Django Administration"
+# admin.site.index_title = 'Timesheet'                # default: "Site administration"
+# admin.site.site_title = 'HTML title from adminsitration' # default: "Django site admin"
+
 urlpatterns = [
-    path('', admin.site.urls),
-    path('attendance/', include('attendance.urls'))
+    path('attendance/', include('attendance.urls')),
+    path('admin/', admin.site.urls),
 ]
