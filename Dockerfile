@@ -18,6 +18,7 @@ RUN apk update \
     && apk add --virtual build-deps gcc g++ python3-dev musl-dev \
     && apk add --no-cache \
     freetype-dev \
+    postgresql-dev \
     fribidi-dev \
     harfbuzz-dev \
     jpeg-dev \
