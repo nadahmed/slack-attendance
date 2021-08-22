@@ -24,7 +24,7 @@ class CheckOutInline(admin.TabularInline):
     extra = 0
 
 class TimeSheetAdmin(admin.ModelAdmin):
-    readonly_fields = ('name','date')
+    readonly_fields = ('name',)
     list_display = ('date', 'name', 'first_check_in', 'last_check_out', 'total_work_hour', 'is_checked_out')
     list_filter = ('name', 'date')
     inlines = [CheckInInline, CheckOutInline]
