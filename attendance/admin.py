@@ -15,13 +15,13 @@ class CheckInInline(admin.TabularInline):
     model = CheckIn
     readonly_fields = ('message',)
     fields = ('time', 'message')
-    extra = 1
+    extra = 0
 
 class CheckOutInline(admin.TabularInline):
     model = CheckOut
     readonly_fields = ('message',)
     fields = ('time', 'message')
-    extra = 1
+    extra = 0
 
 class TimeSheetAdmin(admin.ModelAdmin):
     readonly_fields = ('name','date')

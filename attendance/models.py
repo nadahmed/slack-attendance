@@ -4,7 +4,7 @@ from django.utils import timezone
 
 class Timesheet(models.Model):
     name = models.CharField(blank=False, null=False, max_length=64)
-    date = models.DateField(auto_now=True)
+    date = models.DateField(auto_now_add=True)
 
     def total_work_hour(self):
         check_out = self.check_out.all()
