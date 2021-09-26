@@ -1,9 +1,8 @@
 from django.urls import path
-from .views import Payload
+from .views import Payload, TimesheetHandler, SlackUserCreation
 
 
 urlpatterns = [
-    path("slack/test/", Payload.as_view(), name="test"),
-    path("slack/in/", Payload.as_view(), name="in"),
-    path("slack/out/", Payload.as_view(), name="out")
+    path('slack/integration/', SlackUserCreation.as_view(), name="slack-integration"),
+    path("test/slack/", TimesheetHandler.as_view(), name="timesheet"),
 ]

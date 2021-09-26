@@ -1,8 +1,18 @@
 import datetime
 from django.db import models
 from django.utils import timezone
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
+
+class SlackUser(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="slack")
+    slack_id = models.CharField(max_length=50, unique=True)
+    slack_user = models.CharField(max_length=50, unique=True, blank=True, null=True)
+    response_url = models.URLField(blank=True, null=True)
 
 class Timesheet(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     name = models.CharField(blank=False, null=False, max_length=64)
     date = models.DateField(default=timezone.now, null=False)
 
