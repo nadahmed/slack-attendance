@@ -1,4 +1,4 @@
-FROM python:3.9.4-alpine
+FROM python:3.8-slim-buster
 
 # set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -14,22 +14,10 @@ WORKDIR /code
 
 COPY ./requirements.txt .
 
-RUN apk update \
-    && apk add --virtual build-deps gcc g++ python3-dev musl-dev \
-    && apk add --no-cache \
-    freetype-dev \
-    postgresql-dev \
-    fribidi-dev \
-    harfbuzz-dev \
-    jpeg-dev \
-    lcms2-dev \
-    openjpeg-dev \
-    tcl-dev \
-    tiff-dev \
-    tk-dev \
-    zlib-dev \
-    && pip install --no-cache-dir -r requirements.txt \
-    && apk del build-deps
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends gcc libc-dev python3-dev
+
+RUN pip install -r /requirements.txt
 
 COPY . .
 
