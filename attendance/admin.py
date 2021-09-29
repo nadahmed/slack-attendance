@@ -1,7 +1,10 @@
-import datetime
 from django.contrib import admin
-from .models import SlackPayload, CheckIn, CheckOut, Timesheet
-from django.utils import timezone
+from .models import SlackPayload, CheckIn, CheckOut, Timesheet, SlackUser
+
+
+@admin.register(SlackUser)
+class SlackUserAdmin(admin.ModelAdmin):
+    pass
 
 class SlackPayloadAdmin(admin.ModelAdmin):
     readonly_fields = []
@@ -13,7 +16,6 @@ class SlackPayloadAdmin(admin.ModelAdmin):
 
 class CheckInInline(admin.TabularInline):
     model = CheckIn
-    readonly_fields = ('message',)
     fields = ('time', 'message')
     extra = 0
 
@@ -46,21 +48,6 @@ class TimeSheetAdmin(admin.ModelAdmin):
     @admin.display(description='Total work hour')
     def total_work_hour(self, obj):
         return obj.total_work_hour()
-        # check_out = CheckOut.objects.filter(timesheet=obj)
-        # check_in = CheckIn.objects.filter(timesheet=obj)
-        # date = datetime.date(1, 1, 1)
-
-        # total = datetime.timedelta(0)
-        # for i in range(check_out.count()):
-        #     start_time = check_in[i].time
-        #     stop_time = check_out[i].time
-        #     datetime1 = datetime.datetime.combine(date, start_time)
-        #     datetime2 = datetime.datetime.combine(date, stop_time)
-        #     time_elapsed = datetime2 - datetime1
-
-        #     total = total + time_elapsed    
-
-        # return str(total).split('.')[0]
 
     @admin.display(description='Checked out?')
     def is_checked_out(self, obj) -> bool:
