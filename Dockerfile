@@ -17,7 +17,7 @@ COPY ./requirements.txt .
 RUN apt-get update \
     && apt-get install -y --no-install-recommends gcc libc-dev python3-dev
 
-RUN pip install -r /requirements.txt
+RUN pip install -r requirements.txt
 
 COPY . .
 
