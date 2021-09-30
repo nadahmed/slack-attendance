@@ -15,7 +15,7 @@ WORKDIR /code
 COPY ./requirements.txt .
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends gcc libc-dev python3-dev
+    && apt-get install -y --no-install-recommends gcc libc-dev python3-dev tzdata
 
 RUN pip install -r requirements.txt
 
