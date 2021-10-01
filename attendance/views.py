@@ -70,19 +70,19 @@ class TimesheetHandler(APIView):
                 try:
                     timesheet = self._save_to_timesheet( slackuser, payload)
                     if (timesheet.is_checked_out()):
-                        self.send_msg_to_slack(payload.response_url, payload.channel_id, '{} has checked out!'.format(slackuser.name))
-                        return HttpResponse("You have checked out! Your total work hour is %s." % timesheet.total_work_hour())
+                        self.send_msg_to_slack(payload.response_url, payload.channel_id, '{} has punched out!'.format(slackuser.name))
+                        return HttpResponse("You have punched out! Your total work hour is %s." % timesheet.total_work_hour())
                     else:
-                        self.send_msg_to_slack(payload.response_url, payload.channel_id, '{} has checked in!'.format(slackuser.name))
+                        self.send_msg_to_slack(payload.response_url, payload.channel_id, '{} has punched in!'.format(slackuser.name))
                         return HttpResponse(
-                        "Welcome back! You have checked in! Your total work hour is %s and counting!" % timesheet.total_work_hour()
+                        "Welcome back! You have punched in! Your total work hour is %s and counting!" % timesheet.total_work_hour()
                         )
 
                 except CheckInvalidException as e:
                     if str(e) == "checkin_failed":
-                        return HttpResponse("Timesheet not saved. You need to check out first to check in.")
+                        return HttpResponse("Timesheet not saved. You need to punch out first to punch in.")
                     elif str(e) == "checkout_failed":
-                        return HttpResponse("Timesheet not saved. You need to check in first to check out.")
+                        return HttpResponse("Timesheet not saved. You need to punch in first to punch out.")
                     else:
                         HttpResponse("Omg! This was impossible to happen. Timesheet was not saved! Please contact admin now!")
             
@@ -119,7 +119,7 @@ class TimesheetHandler(APIView):
     def get_timesheet_for_today(self, slackuser, name):
         try:
             timesheet = Timesheet.objects.filter(Q(name=name, user=slackuser.user)).latest('date')
-            if timesheet.date == timezone.now().today().date():
+            if timesheet.date == timezone.localtime(timezone.now()).today().date():
                 return timesheet
         except Timesheet.DoesNotExist:
             pass

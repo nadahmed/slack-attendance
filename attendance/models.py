@@ -15,6 +15,10 @@ class SlackUser(models.Model):
     slack_user = models.CharField(max_length=50, unique=True, blank=True, null=True)
     response_url = models.URLField(blank=True, null=True, unique=True)
 
+    def __str__(self):
+        return self.name
+    
+
 class Timesheet(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     name = models.CharField(blank=False, null=False, max_length=64)
