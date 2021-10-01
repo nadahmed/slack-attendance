@@ -5,16 +5,20 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
+def getLocalTime():
+    return timezone.localtime(timezone.now())
+
 class SlackUser(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="slack")
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="slack", unique=True)
+    name = models.CharField(max_length=100, null=True, blank=True)
     slack_id = models.CharField(max_length=50, unique=True)
     slack_user = models.CharField(max_length=50, unique=True, blank=True, null=True)
-    response_url = models.URLField(blank=True, null=True)
+    response_url = models.URLField(blank=True, null=True, unique=True)
 
 class Timesheet(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     name = models.CharField(blank=False, null=False, max_length=64)
-    date = models.DateField(default=timezone.now, null=False)
+    date = models.DateField(default=getLocalTime, null=False)
 
     def total_work_hour(self):
         check_out = self.check_out.all()
@@ -47,7 +51,7 @@ class Timesheet(models.Model):
 
 class CheckIn(models.Model):
     timesheet = models.ForeignKey(Timesheet, blank=False, null=False, on_delete=models.CASCADE, related_name='check_in')
-    time = models.TimeField(default=timezone.now, blank=False, null=False)
+    time = models.TimeField(default=getLocalTime, blank=False, null=False)
     message = models.CharField(max_length=500, blank=True, null=True)
 
     def __str__(self) -> str:
@@ -55,7 +59,7 @@ class CheckIn(models.Model):
 
 class CheckOut(models.Model):
     timesheet = models.ForeignKey(Timesheet, blank=False, null=False, on_delete=models.CASCADE, related_name='check_out')
-    time = models.TimeField(default=timezone.now, blank=False, null=False, editable=True)
+    time = models.TimeField(default=getLocalTime, blank=False, null=False, editable=True)
     message = models.CharField(max_length=500, blank=True, null=True)
 
     def __str__(self) -> str:

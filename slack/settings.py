@@ -59,7 +59,6 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'corsheaders.middleware.CorsMiddleware',
-    'core.middleware.TimezoneMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware', #To serve static files
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -73,14 +72,15 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 ROOT_URLCONF = 'slack.urls'
 
+RS_ISSUER_URL = env('RS_ISSUER_URL')
 RS_CLIENT_ID = env('RS_CLIENT_ID')
 RS_CLIENT_SECRET = env('RS_CLIENT_SECRET')
 
 OAUTH2_PROVIDER = {
-    'RESOURCE_SERVER_INTROSPECTION_URL': 'https://sso.hivecorelimited.com/introspect/',
+    'RESOURCE_SERVER_INTROSPECTION_URL': '{}/introspect/'.format(RS_ISSUER_URL),
     'RESOURCE_SERVER_INTROSPECTION_CREDENTIALS': (RS_CLIENT_ID, RS_CLIENT_SECRET),
-
 }
+
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -153,7 +153,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Dhaka'
 
 USE_I18N = True
 

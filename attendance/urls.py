@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import Payload, TimesheetHandler, SlackUserCreation
+from .views import TimesheetHandler, SlackUserCreation
 
 
 urlpatterns = [
