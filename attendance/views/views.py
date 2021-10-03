@@ -3,8 +3,8 @@ from django.http.response import HttpResponseBadRequest, HttpResponseForbidden, 
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import HttpResponse
-from .forms import SlackPayloadForm
-from .models import CheckIn, CheckOut, Timesheet, SlackUser
+from attendance.forms import SlackPayloadForm
+from attendance.models import CheckIn, CheckOut, Timesheet, SlackUser
 from django.utils import timezone
 from django.db.models import Q
 import requests
@@ -13,6 +13,7 @@ from re import search
 from rest_framework.views import APIView
 from rest_framework import  permissions
 import requests
+from attendance.exceptions import CheckInvalidException
 # Create your views here.
 
 class SlackUserCreation(APIView):
@@ -143,6 +144,3 @@ class TimesheetHandler(APIView):
             raise CheckInvalidException("checkout_failed")
         return timesheet
 
-class CheckInvalidException(Exception):
-    def __init__(self, *args: object) -> None:
-        super().__init__(*args)

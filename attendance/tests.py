@@ -47,7 +47,7 @@ class SimpleTest1(TestCase):
         self.assertIn(b'wrong command', response.content)
 
 # Test if user can integrate
-class SimpleTest(TestCase):
+class SimpleTest2(TestCase):
     def setUp(self):
 
         self.payload = PAYLOAD
