@@ -2,7 +2,7 @@ import datetime
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth import get_user_model
-
+from attendance.exceptions import CheckInvalidException
 User = get_user_model()
 
 def getLocalTime():
@@ -22,6 +22,11 @@ def get_default_user():
 class Timesheet(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=get_default_user)
     date = models.DateField(default=getLocalTime, null=False)
+
+    @classmethod
+    def get_or_create_for_today(cls, user):
+        (sheet, created) =  cls.objects.get_or_create(user=user, date=getLocalTime().today().date())
+        return sheet
 
     def total_work_hour(self):
         check_out = self.check_out.all()
@@ -50,23 +55,35 @@ class Timesheet(models.Model):
         return self.check_in.count() > self.check_out.count()
 
     def __str__(self) -> str:
-        return self.name
+        return self.user.username
 
 class CheckIn(models.Model):
     timesheet = models.ForeignKey(Timesheet, blank=False, null=False, on_delete=models.CASCADE, related_name='check_in')
     time = models.TimeField(default=getLocalTime, blank=False, null=False)
     message = models.CharField(max_length=500, blank=True, null=True)
 
+    # def save(self, *args, **kwargs):
+    #     if self._state.adding:
+    #         if not self.timesheet.is_checked_out():
+    #             raise CheckInvalidException('checkin_failed')
+    #     super().save(*args, **kwargs)
+            
     def __str__(self) -> str:
-        return self.timesheet.name
+        return self.timesheet.user.username
 
 class CheckOut(models.Model):
     timesheet = models.ForeignKey(Timesheet, blank=False, null=False, on_delete=models.CASCADE, related_name='check_out')
     time = models.TimeField(default=getLocalTime, blank=False, null=False, editable=True)
     message = models.CharField(max_length=500, blank=True, null=True)
 
+    # def save(self, *args, **kwargs):
+    #     if self._state.adding:
+    #         if self.timesheet.is_checked_out():
+    #             raise CheckInvalidException('checkout_failed')
+    #     super().save(*args, **kwargs)
+
     def __str__(self) -> str:
-        return self.timesheet.name
+        return self.timesheet.user.username
 
 class SlackPayload(models.Model):
     token = models.CharField(max_length=64, blank=False, null=True)

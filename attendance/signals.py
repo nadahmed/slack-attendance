@@ -5,12 +5,12 @@ from django.dispatch import receiver
 from attendance.models import CheckIn, CheckOut
 
 def send_msg_to_slack(action, name):
-    msg = ''    
+    msg = ''
     if action == 'punch_in':
-        msg = "*<@{}>* has punched in!".format(name)
+        msg = "<@{}> has *punched in*!".format(name)
     elif action == 'punch_out':
-        msg = "*<@{}>* has punched out!".format(name)
-    headers = {'Authorization': 'Bearer %s' % settings.SLACK_OAUTH_TOKEN}
+        msg = "<@{}> has *punched out*!".format(name)
+    headers = {'Authorization': 'Bearer {}'.format(settings.SLACK_OAUTH_TOKEN)}
     return requests.post(
         settings.SLACK_WEBHOOKS_URL,
         headers=headers,

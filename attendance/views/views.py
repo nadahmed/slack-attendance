@@ -106,19 +106,9 @@ class TimesheetHandler(APIView):
                 return JsonResponse(data)
         return HttpResponse("Oops! Something went wrong! Please notify the admins now!")
 
-    
-    def get_timesheet_for_today(self, user):
-        try:
-            timesheet = Timesheet.objects.filter(Q(user=user)).latest('date')
-            if timesheet.date == timezone.localtime(timezone.now()).today().date():
-                return timesheet
-        except Timesheet.DoesNotExist:
-            pass
-        return Timesheet.objects.create(name='slack', user=user)
-
 
     def _save_to_timesheet(self, user, SlackPayload):
-        timesheet = self.get_timesheet_for_today(user=user)
+        timesheet = Timesheet.get_or_create_for_today(user=user)
         text = SlackPayload.text
         if SlackPayload.command == '/in':
             if timesheet.can_check_in():
@@ -131,6 +121,6 @@ class TimesheetHandler(APIView):
             else:
                 raise CheckInvalidException("checkout_failed")
         else:
-            raise CheckInvalidException("checkout_failed")
+            pass
         return timesheet
 
