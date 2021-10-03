@@ -69,7 +69,7 @@ class TimesheetHandler(APIView):
                 slackuser.save()
 
                 try:
-                    timesheet = self._save_to_timesheet( slackuser, payload)
+                    timesheet = self._save_to_timesheet( slackuser.user, payload)
                     if (timesheet.is_checked_out()):
                         self.send_msg_to_slack(payload.response_url, payload.channel_id, '{} has punched out!'.format(slackuser.name))
                         return HttpResponse("You have punched out! Your total work hour is %s." % timesheet.total_work_hour())
@@ -117,18 +117,18 @@ class TimesheetHandler(APIView):
         return HttpResponse("Oops! Something went wrong! Please notify the admins now!")
 
     
-    def get_timesheet_for_today(self, slackuser, name):
+    def get_timesheet_for_today(self, user):
         try:
-            timesheet = Timesheet.objects.filter(Q(name=name, user=slackuser.user)).latest('date')
+            timesheet = Timesheet.objects.filter(Q(user=user)).latest('date')
             if timesheet.date == timezone.localtime(timezone.now()).today().date():
                 return timesheet
         except Timesheet.DoesNotExist:
             pass
-        return Timesheet.objects.create(name=name, user=slackuser.user)
+        return Timesheet.objects.create(name='slack', user=user)
 
 
-    def _save_to_timesheet(self, slackuser, SlackPayload):
-        timesheet = self.get_timesheet_for_today(slackuser=slackuser, name = SlackPayload.user_name)
+    def _save_to_timesheet(self, user, SlackPayload):
+        timesheet = self.get_timesheet_for_today(user=user)
         text = SlackPayload.text
         if SlackPayload.command == '/in':
             if timesheet.can_check_in():
