@@ -31,7 +31,8 @@ class SlackUserCreation(APIView):
                 SlackUser.objects.create(
                     user=request.user,
                     slack_id= request.data['id'],
-                    name='{} {}'.format(profile['first_name'], profile['last_name']))
+                    name='{} {}'.format(profile['first_name'], profile['last_name'])
+                    )
                 return HttpResponse(status=200)
             except IntegrityError:
                 return HttpResponseForbidden({"message": "slack already integrated. if you want to re-integrate slack ask the admins."})
@@ -43,15 +44,7 @@ class TimesheetHandler(APIView):
     permission_classes=[
         
     ]
-    def send_msg_to_slack(self, url, channel_id, msg):
-        headers = {'Authorization': 'Bearer %s' % settings.SLACK_OAUTH_TOKEN}
-        return requests.post(
-            settings.SLACK_WEBHOOKS_URL,
-            headers=headers,
-            json={
-                "channel": channel_id,
-                "text": msg
-            })
+
     def post(self, request):
         f = SlackPayloadForm(request.POST)
         # print(f)
@@ -71,10 +64,10 @@ class TimesheetHandler(APIView):
                 try:
                     timesheet = self._save_to_timesheet( slackuser.user, payload)
                     if (timesheet.is_checked_out()):
-                        self.send_msg_to_slack(payload.response_url, payload.channel_id, '{} has punched out!'.format(slackuser.name))
+                        # self.send_msg_to_slack(payload.response_url, payload.channel_id, '{} has punched out!'.format(slackuser.name))
                         return HttpResponse("You have punched out! Your total work hour is %s." % timesheet.total_work_hour())
                     else:
-                        self.send_msg_to_slack(payload.response_url, payload.channel_id, '{} has punched in!'.format(slackuser.name))
+                        # self.send_msg_to_slack(payload.response_url, payload.channel_id, '{} has punched in!'.format(slackuser.name))
                         return HttpResponse(
                         "Welcome back! You have punched in! Your total work hour is %s and counting!" % timesheet.total_work_hour()
                         )

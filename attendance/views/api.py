@@ -8,6 +8,8 @@ from django.http.response import JsonResponse
 from rest_framework.response import Response
 from rest_framework import viewsets
 from attendance.serializers import TimesheetSerializer
+from django.conf import settings
+import requests
 
 def get_timesheet_for_today(user):
     try:
@@ -17,6 +19,7 @@ def get_timesheet_for_today(user):
     except Timesheet.DoesNotExist:
         pass
     return Timesheet.objects.create(name="http", user=user)
+
 
 class PunchIn(APIView):
     permission_classes = [

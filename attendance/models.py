@@ -16,7 +16,7 @@ class SlackUser(models.Model):
     response_url = models.URLField(blank=True, null=True, unique=True)
 
     def __str__(self):
-        return self.name
+        return self.name if self.name else ""
     
 
 class Timesheet(models.Model):

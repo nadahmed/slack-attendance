@@ -1,5 +1,4 @@
 from django.contrib.auth import get_user_model
-from django.db.models.query_utils import select_related_descend
 from django.test import TestCase, Client
 from django.urls import reverse
 from rest_framework.test import APIClient
@@ -73,12 +72,12 @@ class SimpleTest2(TestCase):
         payload = self.payload
         payload['command'] = "/in"
         response = self.client.post(reverse('timesheet'), payload)
-        self.assertIn( b'checked in', response.content)
+        self.assertIn( b'punched in', response.content)
         
         # Test if user can check out
         payload['command'] = "/out"
         response = self.client.post(reverse('timesheet'), payload)
-        self.assertIn( b'checked out', response.content)
+        self.assertIn( b'punched out', response.content)
 
 
 
@@ -100,7 +99,7 @@ class SimpleTest2(TestCase):
         # Test if user can check out
         payload['command'] = "/in"
         response = self.client.post(reverse('timesheet'), payload)
-        self.assertIn( b'checked in', response.content)
+        self.assertIn( b'punched in', response.content)
 
         # Test if user can check in before checking out
 
