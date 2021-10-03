@@ -26,8 +26,8 @@ class CheckOutInline(admin.TabularInline):
 
 class TimeSheetAdmin(admin.ModelAdmin):
     
-    list_display = ('date', 'name', 'first_check_in', 'last_check_out', 'total_work_hour', 'is_checked_out')
-    list_filter = ('name', 'date')
+    list_display = ('date', 'user', 'first_check_in', 'last_check_out', 'total_work_hour', 'is_checked_out')
+    list_filter = ('user', 'date')
     inlines = [CheckInInline, CheckOutInline]
 
     @admin.display(description='First check in')

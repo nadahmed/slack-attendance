@@ -10,18 +10,17 @@ def getLocalTime():
 
 class SlackUser(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="slack", unique=True)
-    name = models.CharField(max_length=100, null=True, blank=True)
     slack_id = models.CharField(max_length=50, unique=True)
-    slack_user = models.CharField(max_length=50, unique=True, blank=True, null=True)
     response_url = models.URLField(blank=True, null=True, unique=True)
 
     def __str__(self):
-        return self.name if self.name else ""
+        return self.user.username
     
+def get_default_user():
+    return User.objects.all().first().id
 
 class Timesheet(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
-    name = models.CharField(blank=False, null=False, max_length=64)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=get_default_user)
     date = models.DateField(default=getLocalTime, null=False)
 
     def total_work_hour(self):

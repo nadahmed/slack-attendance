@@ -26,12 +26,9 @@ class SlackUserCreation(APIView):
         if "id" in request.data:
             try:
                 # TO DO: Implement Error Handling
-                r = requests.get("{}/userinfo/".format(settings.RS_ISSUER_URL),{'access_token':request.headers['Authorization'].split(" ")[1]})
-                profile = r.json()
                 SlackUser.objects.create(
                     user=request.user,
                     slack_id= request.data['id'],
-                    name='{} {}'.format(profile['first_name'], profile['last_name'])
                     )
                 return HttpResponse(status=200)
             except IntegrityError:
