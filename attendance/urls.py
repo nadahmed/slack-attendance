@@ -7,6 +7,6 @@ urlpatterns = [
     path("slack/", TimesheetHandler.as_view(), name="timesheet"),
     path("punchin/", PunchIn.as_view(), name='punchin'),
     path("punchout/", PunchOut.as_view(), name='punchout'),
-    path("timesheets/", ListTimesheets.as_view({'get':'list'}), name='timesheet_list'),
+    path("timesheets/", ListTimesheets.as_view(), name='timesheet_list'),
     path("timesheetstatus/", TimesheetStatus.as_view(), name='timesheet_status')
 ]

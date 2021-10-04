@@ -1,5 +1,3 @@
-from django.db import models
-from django.db.models import fields
 from attendance.models import Timesheet, CheckIn, CheckOut
 from rest_framework.serializers import ModelSerializer
 
@@ -20,4 +18,4 @@ class TimesheetSerializer(ModelSerializer):
 
     class Meta:
         model = Timesheet
-        exclude = ('user','name',)
+        exclude = ('user',)

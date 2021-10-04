@@ -2,10 +2,9 @@ from django.utils import timezone
 from rest_framework.views import APIView
 from rest_framework.exceptions import NotAcceptable
 from rest_framework import  permissions
-from attendance.models import Timesheet, CheckIn, CheckOut
+from attendance.models import Timesheet, CheckIn, CheckOut, User
 from django.http.response import JsonResponse
-from rest_framework.response import Response
-from rest_framework import viewsets
+from rest_framework.generics import ListAPIView
 from attendance.serializers import TimesheetSerializer
 
 
@@ -38,11 +37,32 @@ class PunchOut(APIView):
         else:
             raise NotAcceptable(detail="You can only punch out after you punch in.")
 
-class ListTimesheets(viewsets.ViewSet):
-    def list(self, request):
-        queryset = Timesheet.objects.filter(user=request.user)
-        serializer = TimesheetSerializer(queryset, many=True)
-        return Response(serializer.data)
+import django_filters
+
+class TimesheetFilter(django_filters.FilterSet):
+    month = django_filters.NumberFilter(field_name='date', lookup_expr='month')
+    year = django_filters.NumberFilter(field_name='date', lookup_expr='year')
+
+    class Meta:
+        model = Timesheet
+        fields = ['month', 'year']
+
+class ListTimesheets(ListAPIView):
+    permission_classes = [
+        permissions.IsAuthenticated
+    ]
+
+    serializer_class = TimesheetSerializer
+    filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
+    # search_fields = []
+    filter_class = TimesheetFilter
+    def get_queryset(self):
+        return Timesheet.objects.filter(user=self.request.user)
+
+    # def list(self, request):
+    #     queryset = Timesheet.objects.filter(user=request.user)
+    #     serializer = TimesheetSerializer(queryset, many=True)
+    #     return Response(serializer.data)
 
 class TimesheetStatus(APIView):
     def get(self, request):
