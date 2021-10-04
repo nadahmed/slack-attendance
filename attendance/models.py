@@ -61,26 +61,14 @@ class CheckIn(models.Model):
     timesheet = models.ForeignKey(Timesheet, blank=False, null=False, on_delete=models.CASCADE, related_name='check_in')
     time = models.TimeField(default=getLocalTime, blank=False, null=False)
     message = models.CharField(max_length=500, blank=True, null=True)
-
-    # def save(self, *args, **kwargs):
-    #     if self._state.adding:
-    #         if not self.timesheet.is_checked_out():
-    #             raise CheckInvalidException('checkin_failed')
-    #     super().save(*args, **kwargs)
             
     def __str__(self) -> str:
         return self.timesheet.user.username
 
 class CheckOut(models.Model):
     timesheet = models.ForeignKey(Timesheet, blank=False, null=False, on_delete=models.CASCADE, related_name='check_out')
-    time = models.TimeField(default=getLocalTime, blank=False, null=False, editable=True)
+    time = models.TimeField(default=getLocalTime, blank=False, null=False)
     message = models.CharField(max_length=500, blank=True, null=True)
-
-    # def save(self, *args, **kwargs):
-    #     if self._state.adding:
-    #         if self.timesheet.is_checked_out():
-    #             raise CheckInvalidException('checkout_failed')
-    #     super().save(*args, **kwargs)
 
     def __str__(self) -> str:
         return self.timesheet.user.username
