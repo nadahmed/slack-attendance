@@ -63,7 +63,7 @@ class ListTimesheets(ListAPIView):
 class TimesheetStatus(APIView):
     def get(self, request):
         try:
-            sheet = Timesheet.objects.get(user=request.user, date=timezone.localtime(timezone.now()).today().date())
+            sheet = Timesheet.objects.get(user=request.user, date=timezone.now().today().date())
         except Timesheet.DoesNotExist:
             data = {
                 "date": "",
