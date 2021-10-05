@@ -64,6 +64,9 @@ class CheckIn(models.Model):
             
     def __str__(self) -> str:
         return self.timesheet.user.username
+    
+    class Meta:
+        ordering = ['time']
 
 class CheckOut(models.Model):
     timesheet = models.ForeignKey(Timesheet, blank=False, null=False, on_delete=models.CASCADE, related_name='check_out')
@@ -72,6 +75,9 @@ class CheckOut(models.Model):
 
     def __str__(self) -> str:
         return self.timesheet.user.username
+
+    class Meta:
+        ordering = ['time']
 
 class SlackPayload(models.Model):
     token = models.CharField(max_length=64, blank=False, null=True)
