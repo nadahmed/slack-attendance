@@ -22,9 +22,15 @@ def send_msg_to_slack(action, name):
 @receiver(post_save, sender=CheckIn)
 def checkin_callback(sender, instance, created, **kwargs):
     if created:
-        send_msg_to_slack('punch_in', instance.timesheet.user.slack.slack_id)
+        try:
+            send_msg_to_slack('punch_in', instance.timesheet.user.slack.slack_id)
+        except:
+            pass
 
 @receiver(post_save, sender=CheckOut)
 def checkout_callback(sender, instance, created, **kwargs):
     if created:
-        send_msg_to_slack('punch_out', instance.timesheet.user.slack.slack_id)
+        try:
+            send_msg_to_slack('punch_out', instance.timesheet.user.slack.slack_id)
+        except:
+            pass

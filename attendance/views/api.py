@@ -54,15 +54,11 @@ class ListTimesheets(ListAPIView):
 
     serializer_class = TimesheetSerializer
     filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
-    # search_fields = []
+    
     filter_class = TimesheetFilter
     def get_queryset(self):
         return Timesheet.objects.filter(user=self.request.user)
 
-    # def list(self, request):
-    #     queryset = Timesheet.objects.filter(user=request.user)
-    #     serializer = TimesheetSerializer(queryset, many=True)
-    #     return Response(serializer.data)
 
 class TimesheetStatus(APIView):
     def get(self, request):
