@@ -58,7 +58,7 @@ class Timesheet(models.Model):
         return self.user.username
 
     class Meta:
-        ordering = ['date']
+        ordering = ['-date']
 
 class CheckIn(models.Model):
     timesheet = models.ForeignKey(Timesheet, blank=False, null=False, on_delete=models.CASCADE, related_name='check_in')
