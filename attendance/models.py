@@ -57,6 +57,9 @@ class Timesheet(models.Model):
     def __str__(self) -> str:
         return self.user.username
 
+    class Meta:
+        ordering = ['date']
+
 class CheckIn(models.Model):
     timesheet = models.ForeignKey(Timesheet, blank=False, null=False, on_delete=models.CASCADE, related_name='check_in')
     time = models.TimeField(default=getLocalTime, blank=False, null=False)
