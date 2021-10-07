@@ -1,3 +1,4 @@
+from datetime import date, time, timedelta
 from django.utils import timezone
 from rest_framework.views import APIView
 from rest_framework.exceptions import NotAcceptable
@@ -78,3 +79,42 @@ class TimesheetStatus(APIView):
         }
 
         return JsonResponse(data=data, status=200)
+
+class Statistics(APIView):
+    def get(self, request):
+        TARGET_HOURS_PER_DAY = 8
+        TARGET_WORK_DAYS = 5
+
+        year, week, _ = timezone.now().isocalendar()
+        data = {}
+        try:
+            today = Timesheet.objects.get(user=request.user, date=timezone.now().today().date())
+            data['today'] = {
+                "work_hours": str(today.total_work_hour()).split('.')[0],
+                "target": TARGET_HOURS_PER_DAY
+            }
+        except Timesheet.DoesNotExist:
+            data['today'] = {
+                "work_hours": str(timezone.timedelta(0)).split('.')[0],
+                "target": TARGET_HOURS_PER_DAY
+            }
+
+        weeksheets =  Timesheet.objects.filter(user=request.user, date__iso_year=year, date__week=week)
+        total_for_week = timezone.timedelta(0)
+        for sheet in weeksheets:
+            total_for_week = total_for_week + sheet.total_work_hour()
+        data['week'] = {
+            "work_hours": str(total_for_week).split('.')[0],
+            "target": TARGET_HOURS_PER_DAY * TARGET_WORK_DAYS
+        }
+
+        monthsheets = Timesheet.objects.filter(user=request.user, date__month= timezone.now().month)
+        total_for_month = timezone.timedelta(0)
+        for sheet in monthsheets:
+            total_for_month = total_for_month + sheet.total_work_hour()
+        data['month'] = {
+            "work_hours": str(total_for_month).split('.')[0],
+            "target": TARGET_HOURS_PER_DAY * TARGET_WORK_DAYS * 4
+        }
+
+        return JsonResponse(data=data)

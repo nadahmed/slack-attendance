@@ -43,7 +43,9 @@ class Timesheet(models.Model):
 
             total = total + time_elapsed    
 
-        return str(total).split('.')[0]
+        # return str(total).split('.')[0]
+        return total
+
 
     def is_checked_out(self):
         return self.check_in.count() == self.check_out.count()        

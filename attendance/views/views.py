@@ -60,13 +60,14 @@ class TimesheetHandler(APIView):
 
                 try:
                     timesheet = self._save_to_timesheet( slackuser.user, payload)
+                    total_time = str(timesheet.total_work_hour()).split('.')[0]
                     if (timesheet.is_checked_out()):
                         # self.send_msg_to_slack(payload.response_url, payload.channel_id, '{} has punched out!'.format(slackuser.name))
-                        return HttpResponse("You have punched out! Your total work hour is %s." % timesheet.total_work_hour())
+                        return HttpResponse("You have punched out! Your total work hour is %s." % total_time)
                     else:
                         # self.send_msg_to_slack(payload.response_url, payload.channel_id, '{} has punched in!'.format(slackuser.name))
                         return HttpResponse(
-                        "Welcome back! You have punched in! Your total work hour is %s and counting!" % timesheet.total_work_hour()
+                        "Welcome back! You have punched in! Your total work hour is %s and counting!" % total_time
                         )
 
                 except CheckInvalidException as e:

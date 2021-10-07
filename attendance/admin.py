@@ -47,7 +47,7 @@ class TimeSheetAdmin(admin.ModelAdmin):
 
     @admin.display(description='Total work hour')
     def total_work_hour(self, obj):
-        return obj.total_work_hour()
+        return str(obj.total_work_hour()).split('.')[0]
 
     @admin.display(description='Checked out?')
     def is_checked_out(self, obj) -> bool:
