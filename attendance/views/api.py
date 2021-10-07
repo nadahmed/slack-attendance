@@ -91,12 +91,14 @@ class Statistics(APIView):
             today = Timesheet.objects.get(user=request.user, date=timezone.now().today().date())
             data['today'] = {
                 "work_hours": str(today.total_work_hour()).split('.')[0],
-                "target": TARGET_HOURS_PER_DAY
+                "target": TARGET_HOURS_PER_DAY,
+                "last_activity": {"activity":'punch_out', "time": today.check_out.all().latest('time').time} if today.is_checked_out() else {"activity":'punch_in', "time": today.check_in.all().latest('time').time}
             }
         except Timesheet.DoesNotExist:
             data['today'] = {
                 "work_hours": str(timezone.timedelta(0)).split('.')[0],
-                "target": TARGET_HOURS_PER_DAY
+                "target": TARGET_HOURS_PER_DAY,
+                "last_activity": {"activity":"", "time": ""}
             }
 
         weeksheets =  Timesheet.objects.filter(user=request.user, date__iso_year=year, date__week=week)
