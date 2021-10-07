@@ -90,7 +90,7 @@ class Statistics(APIView):
         try:
             today = Timesheet.objects.get(user=request.user, date=timezone.now().today().date())
             data['today'] = {
-                "work_seconds": today.total_work_hour().seconds,
+                "work_seconds": today.total_work_hour().total_seconds(),
                 "target": TARGET_HOURS_PER_DAY,
                 "last_activity": {"activity":'punch_out', "time": today.check_out.all().latest('time').time} if today.is_checked_out() else {"activity":'punch_in', "time": today.check_in.all().latest('time').time}
             }
@@ -106,7 +106,7 @@ class Statistics(APIView):
         for sheet in weeksheets:
             total_for_week = total_for_week + sheet.total_work_hour()
         data['week'] = {
-            "work_seconds": total_for_week.seconds,
+            "work_seconds": total_for_week.total_seconds(),
             "target": TARGET_HOURS_PER_DAY * TARGET_WORK_DAYS
         }
 
@@ -115,7 +115,7 @@ class Statistics(APIView):
         for sheet in monthsheets:
             total_for_month = total_for_month + sheet.total_work_hour()
         data['month'] = {
-            "work_seconds": total_for_month.seconds,
+            "work_seconds": total_for_month.total_seconds(),
             "target": TARGET_HOURS_PER_DAY * TARGET_WORK_DAYS * 4
         }
 
