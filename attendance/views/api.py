@@ -1,4 +1,3 @@
-from datetime import date, time, timedelta
 from django.utils import timezone
 from rest_framework.views import APIView
 from rest_framework.exceptions import NotAcceptable
@@ -7,7 +6,7 @@ from attendance.models import Timesheet, CheckIn, CheckOut, User
 from django.http.response import JsonResponse
 from rest_framework.generics import ListAPIView
 from attendance.serializers import TimesheetSerializer
-
+from django.db.models import Q
 
 class PunchIn(APIView):
     permission_classes = [
@@ -101,7 +100,7 @@ class Statistics(APIView):
                 "last_activity": {"activity":"", "time": ""}
             }
 
-        weeksheets =  Timesheet.objects.filter(user=request.user, date__iso_year=year, date__week=week)
+        weeksheets =  Timesheet.objects.filter(date__week=week, user=request.user, date__year=year)
         total_for_week = timezone.timedelta(0)
         for sheet in weeksheets:
             total_for_week = total_for_week + sheet.total_work_hour()
@@ -110,7 +109,7 @@ class Statistics(APIView):
             "target": TARGET_HOURS_PER_DAY * TARGET_WORK_DAYS
         }
 
-        monthsheets = Timesheet.objects.filter(user=request.user, date__month= timezone.now().month)
+        monthsheets = Timesheet.objects.filter(user=request.user, date__month= timezone.now().month, date__year=year)
         total_for_month = timezone.timedelta(0)
         for sheet in monthsheets:
             total_for_month = total_for_month + sheet.total_work_hour()
