@@ -90,13 +90,13 @@ class Statistics(APIView):
         try:
             today = Timesheet.objects.get(user=request.user, date=timezone.now().today().date())
             data['today'] = {
-                "work_hours": str(today.total_work_hour()).split('.')[0],
+                "work_hours": today.total_work_hour().seconds,
                 "target": TARGET_HOURS_PER_DAY,
                 "last_activity": {"activity":'punch_out', "time": today.check_out.all().latest('time').time} if today.is_checked_out() else {"activity":'punch_in', "time": today.check_in.all().latest('time').time}
             }
         except Timesheet.DoesNotExist:
             data['today'] = {
-                "work_hours": str(timezone.timedelta(0)).split('.')[0],
+                "work_hours": 0,
                 "target": TARGET_HOURS_PER_DAY,
                 "last_activity": {"activity":"", "time": ""}
             }
@@ -106,7 +106,7 @@ class Statistics(APIView):
         for sheet in weeksheets:
             total_for_week = total_for_week + sheet.total_work_hour()
         data['week'] = {
-            "work_hours": str(total_for_week).split('.')[0],
+            "work_hours": total_for_week.seconds,
             "target": TARGET_HOURS_PER_DAY * TARGET_WORK_DAYS
         }
 
@@ -115,7 +115,7 @@ class Statistics(APIView):
         for sheet in monthsheets:
             total_for_month = total_for_month + sheet.total_work_hour()
         data['month'] = {
-            "work_hours": str(total_for_month).split('.')[0],
+            "work_hours": total_for_month.seconds,
             "target": TARGET_HOURS_PER_DAY * TARGET_WORK_DAYS * 4
         }
 
