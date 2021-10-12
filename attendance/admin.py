@@ -1,10 +1,19 @@
 from django.contrib import admin
-from .models import SlackPayload, CheckIn, CheckOut, Timesheet, SlackUser
+from .models import SlackPayload, CheckIn, CheckOut, Timesheet, SlackUser, Shift, ShiftUser
 
 
 @admin.register(SlackUser)
 class SlackUserAdmin(admin.ModelAdmin):
     pass
+
+class ShiftUserInline(admin.StackedInline):
+    model = ShiftUser
+    extra = 1
+
+@admin.register(Shift)
+class ShiftAdmin(admin.ModelAdmin):
+    fields = ('name', 'from_time', 'to_time')
+    inlines = [ShiftUserInline]
 
 class SlackPayloadAdmin(admin.ModelAdmin):
     readonly_fields = []

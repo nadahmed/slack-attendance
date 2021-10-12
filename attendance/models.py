@@ -19,9 +19,26 @@ class SlackUser(models.Model):
 def get_default_user():
     return User.objects.all().first().id
 
+class Shift(models.Model):
+    name = models.CharField(max_length=50)
+    from_time = models.TimeField(verbose_name='From')
+    to_time = models.TimeField(verbose_name='To')
+
+    def __str__(self):
+        return self.name
+    
+
+class ShiftUser(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="shift")
+    shift = models.ForeignKey(Shift, on_delete=models.RESTRICT, related_name="users")
+
+    class Meta:
+        unique_together = ['user', 'shift']
+
 class Timesheet(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=get_default_user)
     date = models.DateField(default=getLocalTime, null=False)
+    is_late = models.BooleanField(default=False)
 
     @classmethod
     def get_or_create_for_today(cls, user):
