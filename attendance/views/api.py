@@ -1,12 +1,12 @@
 from django.utils import timezone
 from rest_framework.views import APIView
 from rest_framework.exceptions import NotAcceptable
-from rest_framework import  permissions
-from attendance.models import Timesheet, CheckIn, CheckOut, User
+from rest_framework import  permissions, viewsets
+from attendance.models import Shift, Timesheet, CheckIn, CheckOut
 from django.http.response import JsonResponse
 from rest_framework.generics import ListAPIView
 from attendance.serializers import TimesheetSerializer
-from django.db.models import Q
+from attendance.serializers import ShiftSerializer
 
 class PunchIn(APIView):
     permission_classes = [
@@ -119,3 +119,10 @@ class Statistics(APIView):
         }
 
         return JsonResponse(data=data)
+
+class ShiftViewSet(viewsets.ModelViewSet):
+    """
+    A simple ViewSet for viewing and editing accounts.
+    """
+    queryset = Shift.objects.all()
+    serializer_class = ShiftSerializer

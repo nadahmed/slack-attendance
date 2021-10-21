@@ -2,11 +2,18 @@ import datetime
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth import get_user_model
-from attendance.exceptions import CheckInvalidException
+
 User = get_user_model()
 
 def getLocalTime():
     return timezone.localtime(timezone.now())
+
+# class AccessPermission(models.Model):
+#     user = models.ManyToManyField(User, related_name='access_permissions')
+#     code = models.CharField(max_length=100, unique=True)
+    
+#     def __str__(self) -> str:
+#         return self.code
 
 class SlackUser(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="slack", unique=True)
@@ -20,13 +27,17 @@ def get_default_user():
     return User.objects.all().first().id
 
 class Shift(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, unique=True)
     from_time = models.TimeField(verbose_name='From')
     to_time = models.TimeField(verbose_name='To')
+    buffer_time = models.PositiveIntegerField(default=15, help_text="Buffer time in minutes")
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.name
-    
+
+    class Meta:
+        unique_together = ['from_time', 'to_time', 'buffer_time']
 
 class ShiftUser(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="shift")

@@ -1,5 +1,11 @@
-from attendance.models import Timesheet, CheckIn, CheckOut
+from attendance.models import Timesheet, CheckIn, CheckOut, Shift
 from rest_framework.serializers import ModelSerializer
+
+
+class ShiftSerializer(ModelSerializer):
+    class Meta:
+        model = Shift
+        fields = '__all__'
 
 class CheckInSerializer(ModelSerializer):
     class Meta:
