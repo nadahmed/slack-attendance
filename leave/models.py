@@ -4,16 +4,17 @@ import datetime
 
 User = get_user_model()
 
-class Category(models.Model):
+class LeaveType(models.Model):
     pass
-    # name = models.CharField(max_length=64)
-    # count = models.SmallIntegerField()
+    name = models.CharField(max_length=64)
+    count = models.SmallIntegerField()
+    is_active = models.BooleanField(default=True)
 
-    # def __str__(self):
-    #     return self.name
+    def __str__(self):
+        return self.name
     
-    # class Meta:
-    #     verbose_name_plural = "Categories"
+    class Meta:
+        verbose_name = "Leave Type"
     
 
 class Application(models.Model):

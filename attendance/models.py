@@ -64,6 +64,7 @@ class Shift(models.Model):
 
     class Meta:
         unique_together = ['from_time', 'to_time', 'buffer_time']
+        ordering = ['id']
 
 class ShiftUser(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="shift")

@@ -1,9 +1,10 @@
 from django.contrib import admin
 
-# from leave.models import Category, Application, Approval
+from leave.models import LeaveType
 
-# class TypeAdmin(admin.ModelAdmin):
-#     model = Category
+@admin.register(LeaveType)
+class LeaveTypeAdmin(admin.ModelAdmin):
+    model = LeaveType
 
 # class ApprovalAdmin(admin.StackedInline):
 #     model = Approval
@@ -12,6 +13,5 @@ from django.contrib import admin
 #     model = Application
 #     inlines = [ApprovalAdmin]
 
-# admin.site.register(Category, TypeAdmin)
 # admin.site.register(Application, ApplicationAdmin)
 # admin.site.register(Approval, ApprovalAdmin)
