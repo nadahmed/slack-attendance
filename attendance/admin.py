@@ -12,7 +12,7 @@ class ShiftUserInline(admin.StackedInline):
 
 @admin.register(Shift)
 class ShiftAdmin(admin.ModelAdmin):
-    fields = ('name', 'from_time', 'to_time')
+    # fields = ('__all__',)
     inlines = [ShiftUserInline]
 
 class SlackPayloadAdmin(admin.ModelAdmin):

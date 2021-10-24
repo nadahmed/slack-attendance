@@ -1,7 +1,9 @@
 import datetime
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth import get_user_model
+from django.db.models import F
 
 User = get_user_model()
 
@@ -27,14 +29,38 @@ def get_default_user():
     return User.objects.all().first().id
 
 class Shift(models.Model):
+    CHOICES = (
+    (0, 'Sunday'),
+    (1, 'Monday'),
+    (2, 'Tuesday'),
+    (3, 'Wednesday'),
+    (4, 'Thursday'),
+    (5, 'Friday'),
+    (6, 'Saturday'),
+    )
     name = models.CharField(max_length=50, unique=True)
     from_time = models.TimeField(verbose_name='From')
     to_time = models.TimeField(verbose_name='To')
     buffer_time = models.PositiveIntegerField(default=15, help_text="Buffer time in minutes")
     is_active = models.BooleanField(default=True)
+    work_days = models.PositiveIntegerField(default=5)
+    day_of_the_week= models.PositiveIntegerField("Day of the week", choices=CHOICES, default=0)
+    is_default = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
+    
+    
+    def save(self, *args, **kwargs):
+        if self.is_default:
+            try:
+                temp = Shift.objects.get(is_default=True)
+                if self != temp:
+                    temp.is_default= False
+                    temp.save()
+            except Shift.DoesNotExist:
+                pass
+        super(Shift, self).save(*args, **kwargs)
 
     class Meta:
         unique_together = ['from_time', 'to_time', 'buffer_time']
