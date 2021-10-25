@@ -24,5 +24,6 @@ admin.site.site_header = 'Hivecore Attendance Administration'                   
 urlpatterns = [
     path('attendance/', include('attendance.urls')),
     path('leave/', include('leave.urls')),
+    path('', include('holiday.urls')),
     path('admin/', admin.site.urls),
 ]
