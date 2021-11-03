@@ -72,7 +72,7 @@ MIDDLEWARE = [
 
 CORS_ORIGIN_ALLOW_ALL = True
 
-ROOT_URLCONF = 'slack.urls'
+ROOT_URLCONF = 'hrms.urls'
 
 RS_ISSUER_URL = env('RS_ISSUER_URL')
 RS_CLIENT_ID = env('RS_CLIENT_ID')
@@ -113,7 +113,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'slack.wsgi.application'
+WSGI_APPLICATION = 'hrms.wsgi.application'
 
 
 # Database

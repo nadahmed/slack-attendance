@@ -27,4 +27,4 @@ USER appuser
 
 # ENTRYPOINT python manage.py collectstatic --no-input && python manage.py runserver 0.0.0.0:$PORT
 
-CMD python manage.py collectstatic --no-input && uvicorn --host 0.0.0.0 --port $PORT slack.asgi:application
+CMD python manage.py collectstatic --no-input && uvicorn --host 0.0.0.0 --port $PORT hrms.asgi:application
