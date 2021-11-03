@@ -1,17 +1,18 @@
 from django.contrib import admin
 
-from leave.models import LeaveType
+from leave.models import LeaveType, LeaveForm, Approval
 
 @admin.register(LeaveType)
 class LeaveTypeAdmin(admin.ModelAdmin):
     model = LeaveType
+    
+@admin.register(Approval)
+class ApprovalAdmin(admin.ModelAdmin):
+    model = Approval
 
-# class ApprovalAdmin(admin.StackedInline):
-#     model = Approval
-
-# class ApplicationAdmin(admin.ModelAdmin):
-#     model = Application
-#     inlines = [ApprovalAdmin]
+@admin.register(LeaveForm)
+class LeaveFormAdmin(admin.ModelAdmin):
+    model = LeaveForm
 
 # admin.site.register(Application, ApplicationAdmin)
 # admin.site.register(Approval, ApprovalAdmin)
