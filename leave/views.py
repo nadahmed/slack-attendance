@@ -5,6 +5,7 @@ from leave.serializers import LeaveTypeSerializer, LeaveFormSerializer, LeaveFor
 from leave.models import LeaveType, LeaveForm
 from django.contrib.auth import get_user_model
 import requests
+from django.conf import settings
 
 User = get_user_model()
 
@@ -26,7 +27,7 @@ class LeaveFormViewSet(viewsets.ModelViewSet):
         return query_set
         
     def get_reporting_boss(self, token):
-        r = requests.get('http://localhost:8000/userinfo/', headers={
+        r = requests.get(settings.USERINFO_ENDPOINT, headers={
             "Authorization": "{}".format(token)
         })
         print(r.json())
@@ -43,13 +44,6 @@ class LeaveFormViewSet(viewsets.ModelViewSet):
 
         return boss
 
-
-    
-    # def list(self, request):
-    #     print("LIST TRIGGER")
-    #     queryset = LeaveForm.objects.filter(applicant=request.user)
-    #     serializer = LeaveFormSerializer(queryset, many=True)
-    #     return Response(serializer.data)
 
     def create(self, request):
         print("CREATE TRIGGERED")
