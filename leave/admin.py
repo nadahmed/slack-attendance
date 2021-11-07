@@ -13,6 +13,7 @@ class ApprovalAdmin(admin.ModelAdmin):
 @admin.register(LeaveForm)
 class LeaveFormAdmin(admin.ModelAdmin):
     model = LeaveForm
+    exclude = ('approval',)
 
 # admin.site.register(Application, ApplicationAdmin)
 # admin.site.register(Approval, ApprovalAdmin)

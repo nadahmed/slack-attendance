@@ -5,6 +5,13 @@ from django.utils import timezone
 
 User = get_user_model()
 
+
+def get_local_time():
+    return timezone.localtime(timezone.now())
+
+def get_local_day():
+    return get_local_time().day
+
 class LeaveType(models.Model):
     pass
     name = models.CharField(max_length=64)
@@ -17,29 +24,6 @@ class LeaveType(models.Model):
     class Meta:
         verbose_name = "Leave Type"
     
-
-class LeaveForm(models.Model):
-    applicant = models.ForeignKey(User, on_delete=models.RESTRICT, related_name='leave_form')
-    date_from = models.DateField(verbose_name="From")
-    date_to = models.DateField(null=True, blank=True, verbose_name="Till")
-    leave_type = models.ForeignKey(LeaveType, on_delete=models.RESTRICT)
-    reason = models.CharField(max_length=255)
-    
-    def leave_count(self):
-        if self.date_to is not None and self.date_to > self.date_from:
-            return (self.date_to - self.date_from).days
-        else:
-            datetime.timedelta(1).days
-
-    # def notify_supervisor(self):
-    #     print("Notified Supervisor!")
-
-    def __str__(self):
-        return "{} - {}".format(self.leave_type.name, self.applicant.username)
-    
-def get_local_time():
-    return timezone.localtime(timezone.now())
-
 class Approval(models.Model):
     
     APPROVAL_TYPES = (
@@ -50,9 +34,8 @@ class Approval(models.Model):
     
     approval_type = models.CharField(max_length=20, choices=APPROVAL_TYPES, default='pending')
     modified_by = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
-    created = models.DateField(editable=False, default=get_local_time)
+    created = models.DateTimeField(editable=False, default=get_local_time)
     modified = models.DateTimeField(default=get_local_time)
-    leave_form = models.OneToOneField(LeaveForm, on_delete=models.CASCADE, blank=False, null=True)
 
     def save(self, *args, **kwargs):
         ''' On save, update timestamps '''
@@ -63,4 +46,33 @@ class Approval(models.Model):
 
     def __str__(self):
         return self.approval_type
+
+class LeaveForm(models.Model):
+    applicant = models.ForeignKey(User, on_delete=models.RESTRICT, related_name='leave_form')
+    date_from = models.DateField(verbose_name="From",)
+    date_to = models.DateField(null=True, blank=True, verbose_name="Till")
+    leave_type = models.ForeignKey(LeaveType, on_delete=models.RESTRICT)
+    reason = models.CharField(max_length=255)
+    approval = models.OneToOneField(Approval, on_delete=models.RESTRICT, blank=True, null=True, related_name='leave_form')
+
+    def leave_count(self):
+        if self.date_to is not None and self.date_to > self.date_from:
+            return (self.date_to - self.date_from).days
+        else:
+            datetime.timedelta(1).days
+    
+    
+
+
+    def save(self, *args, **kwargs):
+        if(self.approval is None):
+            approver = Approval.objects.create(leave_form=self)        
+            self.approval = approver
+        return super().save(*args, **kwargs)
+
+    def __str__(self):
+        return "{} - {}".format(self.leave_type.name, self.applicant.username)
+    
+
+
     
